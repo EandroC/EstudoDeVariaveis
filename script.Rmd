@@ -5,7 +5,6 @@ output: html_notebook
 
 ```{r}
 dados <- read.csv("Dados\\HR_comma_sep.csv", header = TRUE)
-
 head(dados)
 ```
 
@@ -14,14 +13,137 @@ summary(dados)
 ```
 ```{r}
 #variável quantitativa contínua
+#verificando a situação dos dados
 summary(dados$satisfaction_level)
+#Tbm poderia usar:
+dados[dados$satisfaction_level<0 | dados$satisfaction_level>1 ,]$satisfaction_level
 boxplot(dados$satisfaction_level)
+
 histograma <- hist(dados$satisfaction_level)
+
 #Elaborando um gráfico de frequência acumulutiva
-histograma$counts <- cumsum(histograma$counts)    
-plot(histograma) 
+histograma$counts <- cumsum(histograma$counts)
+plot(histograma)
+```
+
+
+```{r}
+#Variável quantitativa continua
+summary(dados$last_evaluation)
+dados[dados$last_evaluation<0 | dados$last_evaluation>1 ,]$last_evaluation
+boxplot(dados$last_evaluation)
+
+histograma <- hist(dados$last_evaluation)
+
+histograma$counts <- cumsum(histograma$counts)
+plot(histograma)
 
 ```
+```{r}
+#Variável quantitativa discreta
+summary(dados$number_project)
+dados[dados$number_project<0 ,]$number_project
+boxplot(dados$number_project)
+
+histograma <- hist(dados$number_project)
+
+histograma$counts <- cumsum(histograma$counts)
+plot(histograma)
+
+```
+```{r}
+#variável quantitativa continua
+summary(dados$average_montly_hours)
+boxplot(dados$average_montly_hours)
+
+histograma<- hist(dados$average_montly_hours)
+
+histograma$counts <- cumsum(histograma$counts)
+plot(histograma)
+```
+```{r}
+#variavel quantitativa discreta
+summary(dados$time_spend_company)
+dados[dados$time_spend_company<0  ,]$time_spend_company
+boxplot(dados$time_spend_company)
+
+histograma<- hist(dados$time_spend_company)
+
+histograma$counts <- cumsum(histograma$counts)
+plot(histograma)
+
+#Observando a quantidade de dados
+library(dplyr)
+
+grupo <- dados %>%
+  group_by(time_spend_company) %>%
+  count()
+grupo
+```
+```{r}
+#variavel quantitativa discreta
+summary(dados$Work_accident)
+boxplot(dados$Work_accident)
+
+histograma <- hist(dados$Work_accident)
+histograma$counts <- cumsum(histograma$counts)
+plot(histograma)
+
+grupo <- dados %>%
+  group_by(Work_accident) %>%
+  count()
+grupo
+```
+```{r}
+#variavel continua discreta
+summary(dados$left)
+boxplot(dados$left)
+
+histograma<- hist(dados$left)
+histograma$counts <- cumsum(histograma$counts)
+plot(histograma)
+
+grupo <- dados %>%
+  group_by(left)%>%
+  count()
+grupo
+```
+```{r}
+summary(dados$promotion_last_5years)
+boxplot(dados$promotion_last_5years)
+
+histograma<- hist(dados$promotion_last_5years)
+histograma$counts<- cumsum(histograma$counts)
+plot(histograma)
+
+grupo <- dados %>%
+  group_by(promotion_last_5years)%>%
+  count()
+grupo
+```
+```{r}
+#variavel qualitativa nominal
+summary(dados$Department)
+
+x <- table(dados$Department)
+
+x <- xtabs(~Department, data = dados)
+
+x
+
+barplot(x,
+        horiz = TRUE,
+        xlab = "Departamento",
+        ylab = "Frequência absoluta",
+        col = c("seagreen", "yellow", "red"))
+
+grupo <- dados %>%
+  group_by(Department)%>%
+  count()
+grupo
+
+```
+
 
 
 
