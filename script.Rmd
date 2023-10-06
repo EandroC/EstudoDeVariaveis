@@ -131,17 +131,106 @@ x <- xtabs(~Department, data = dados)
 
 x
 
-barplot(x,
-        horiz = TRUE,
-        xlab = "Departamento",
-        ylab = "Frequência absoluta",
-        col = c("seagreen", "yellow", "red"))
-
-grupo <- dados %>%
+departamento <- dados %>%
   group_by(Department)%>%
   count()
-grupo
+departamento
 
+barplot(departamento$n,col= gray.colors(10), xlab="Spray", ylab="Total", names.arg=departamento$Department)
+box()
+
+```
+```{r}
+#install.packages("ggplot2") 
+#install.packages("colorspace")
+#install.packages("dplyr")
+library("ggplot2")
+library(dplyr)
+```
+
+
+```{r}
+#Variavel qualitativa nominal
+#Obtendo a frequenca absoluta de "Departament"
+freqAbs<- as.data.frame(table(dados$Department)) 
+freqAbs
+#Renomeando colunas
+colnames(freqAbs) = c("Departamento","Funcionarios")
+freqAbs
+```
+```{r}
+#Elaborando o grafico de barras horizontal da frequencia absoluta
+ggplot(freqAbs, aes(x = Funcionarios, y = Departamento)) +
+  geom_col(fill = "gray70") +
+  geom_text(aes(label= Funcionarios)) +
+  theme_minimal()
+```
+```{r}
+#Criando a coluna da frequencia relativa 
+freqAbs <- freqAbs |> 
+  dplyr::mutate(PercFuncionarios = paste0(sprintf("%4.1f", Funcionarios / sum(Funcionarios) * 100), "%"))
+
+freqAbs
+
+```
+```{r}
+#Elaborando o grafico de barras horizontal da frequencia relativa
+ggplot(freqAbs, aes(x = PercFuncionarios, y = Departamento)) +
+  geom_col(fill = "gray70") +
+  theme_minimal()
+```
+```{r}
+#Variavel qualitativa ordinal
+freqAbs<- as.data.frame(table(dados$salary)) 
+freqAbs
+
+colnames(freqAbs) = c("TipoSalario","Funcionarios")
+freqAbs
+```
+```{r}
+#Organizando se acordo com nivel
+freqAbs$TipoSalario <- factor(freqAbs$TipoSalario,                          
+                  levels = c("low", "medium", "high"))
+
+ggplot(freqAbs, aes(x = TipoSalario, y = Funcionarios)) +
+  geom_col(fill = "gray70") +
+  geom_text(aes(label= Funcionarios)) +
+  theme_minimal()
+```
+```{r}
+#ordenando pela quantidade de funcionarios(menor para o maior)
+freqAbs$TipoSalario <- factor(freqAbs$TipoSalario, levels = freqAbs$TipoSalario[order(freqAbs$Funcionarios)])
+
+ggplot(freqAbs, aes(x = TipoSalario, y = Funcionarios)) +
+  geom_col(fill = "gray70") +
+  geom_text(aes(label= Funcionarios)) +
+  theme_minimal()
+```
+```{r}
+freqAbs <- freqAbs |> 
+  dplyr::mutate(PercFuncionarios = paste0(sprintf("%4.1f", Funcionarios / sum(Funcionarios) * 100), "%"))
+
+freqAbs
+```
+```{r}
+freqAbs$TipoSalario <- factor(freqAbs$TipoSalario,                          
+                  levels = c("low", "medium", "high"))
+
+ggplot(freqAbs, aes(x = TipoSalario, y = PercFuncionarios)) +
+  geom_col(fill = "gray70") +
+  theme_minimal()
+```
+```{r}
+freqAbs$TipoSalario <- factor(freqAbs$TipoSalario,                          
+                  levels = c("low", "medium", "high"))
+
+ggplot(freqAbs, aes(x = "", y = PercFuncionarios, fill = TipoSalario)) +
+  geom_col(color = "black") +
+  coord_polar(theta = "y")+
+  geom_text(aes(label = PercFuncionarios),
+            position = position_stack(vjust = 0.5)) +
+  scale_fill_grey()+
+  theme_void()
 ```
 
 
